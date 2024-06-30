@@ -1,162 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Histogram Citra Grayscale</title>
-  <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
-</head>
-<body>
-  <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_image_gray') }}">
-    <div class="card text-center mt-5 mx-auto w-50 p-5 shadow">
-      <div class="card-body">
-        <h1 class="text-center">Histogram Citra Grayscale</h1>
-        <div class="d-grid gap-5 col-10 mx-auto mt-5">
-          <div class="mb-3">
-            <label for="formFile" class="form-label">Masukkan Citra Grayscale</label>
-            <input class="form-control" type="file" name="file" id="formFile" required/>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Histogram Citra Grayscale</title>
+    <link
+      href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <form
+      method="post"
+      enctype="multipart/form-data"
+      action="{{ url_for('upload_image_gray') }}"
+    >
+      <div class="card text-center mt-5 mx-auto w-50 p-5 shadow">
+        <div class="card-body">
+          <h1 class="text-center">Histogram Citra Grayscale</h1>
+          <div class="d-grid gap-5 col-10 mx-auto mt-5">
+            <div class="mb-3">
+              <label for="formFile" class="form-label"
+                >Masukkan Citra Grayscale</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                name="file"
+                id="formFile"
+                required
+              />
+            </div>
           </div>
+          <a href="/" class="btn btn-danger">Back</a>
+          <!-- Button trigger modal -->
+          <button
+            type="submit"
+            value="Upload"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+          >
+            Convert
+          </button>
         </div>
-        <a href="/" class="btn btn-danger">Back</a>
-        <!-- Button trigger modal -->
-        <button type="submit" value="Upload" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-          Convert
-        </button>
+        <footer class="bg-body-tertiary text-center text-lg-start mt-5">
+          <!-- Copyright -->
+          <div
+            class="text-center p-3"
+            style="background-color: rgba(0, 0, 0, 0.05)"
+          >
+            © 2020 Copyright: Siti Norhaliza
+          </div>
+          <!-- Copyright -->
+        </footer>
       </div>
-    </div>
-  </form>
+    </form>
 
     <!-- Modal -->
-  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdrop">Modal title</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-
-          {% if filename %}
-          <div class="">
+    <div
+      class="modal fade"
+      id="staticBackdrop"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdrop">Histogram Grayscale</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            {% if filename %}
             <div class="">
-              <div class="d-flex justify-content-center flex-shrink-0 gap-3">
-                <div class="p-5 ">
-                  <h3>Citra Awal</h3>
-                    <img src="{{ url_for('static', filename='uploads/' ~ filename) }}" alt="Uploaded Image" width="150">
+              <div class="">
+                <div class="d-flex justify-content-center flex-shrink-0 gap-3">
+                  <div class="p-5">
+                    <h3>Citra Awal</h3>
+                    <img
+                      src="{{ url_for('static', filename='uploads/' ~ filename) }}"
+                      alt="Uploaded Image"
+                      width="150"
+                    />
+                  </div>
+                  <div class="p-5">
+                    <h3>Citra Grayscale</h3>
+                    <img
+                      src="{{ url_for('static', filename='uploads/gray_' ~ filename) }}"
+                      alt="Grayscale Image"
+                      width="150"
+                    />
+                  </div>
                 </div>
-                <div class="p-5">
-                  <h3>Citra Grayscale</h3>
-                    <img src="{{ url_for('static', filename='uploads/gray_' ~ filename) }}" alt="Grayscale Image" width="150">
+              </div>
+            </div>
+            <div class="card text-center mt-5 mx-auto w-77 p-5 shadow">
+              <div
+                class="container mt-5 justify-content-center align-items-center"
+              >
+                <div class="row justify-content-center align-items-center">
+                  <div class="col-md-7">
+                    <canvas id="grayChart" width="400" height="300"></canvas>
+                  </div>
+                  <div class="col-md-7">
+                    <h4>Gray</h4>
+                    <p>Rata-rata: {{ stats.mean }}</p>
+                    <p>Variansi: {{ stats.variance }}</p>
+                    <p>Standard Deviasi: {{ stats.std_dev }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card text-center mt-5 mx-auto w-77 p-5 shadow">
+              <div class="container">
+                <div class="row justify-content-center align-items-center">
+                  <div class="col-md-7">
+                    <canvas
+                      id="normalizedGrayChart"
+                      width="400"
+                      height="300"
+                    ></canvas>
+                  </div>
+                  <div class="col-md-7">
+                    <h4>Normalisasi Gray</h4>
+                    <p>Rata-rata: {{ normalized_stats.mean }}</p>
+                    <p>Variansi: {{ normalized_stats.variance }}</p>
+                    <p>Standard Deviasi: {{ normalized_stats.std_dev }}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="card text-center mt-5 mx-auto w-77 p-5 shadow">
-            <div class="container mt-5 justify-content-center align-items-center">
-              <div class="row justify-content-center align-items-center">
-                <div class="col-md-7">
-                  <canvas id="grayChart" width="400" height="300"></canvas>
-                </div>
-                <div class="col-md-7">
-                  <h4>Gray</h4>
-                  <p>Rata-rata: {{ stats.mean }}</p>
-                  <p>Variansi: {{ stats.variance }}</p>
-                  <p>Standard Deviasi: {{ stats.std_dev }}</p>
-                </div>
+          <div class="modal-footer">
+            <footer class="container" style="width: 50%; margin: 0 auto">
+              <!-- Copyright -->
+              <div
+                class="justify-content-center text-center align-items-center"
+              >
+                © 2020 Copyright: Siti Norhaliza
               </div>
-            </div>
+              <!-- Copyright -->
+            </footer>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
           </div>
-          <div class="card text-center mt-5 mx-auto w-77 p-5 shadow">
-            <div class="container">
-              <div class="row justify-content-center align-items-center">
-                <div class="col-md-7">
-                  <canvas id="normalizedGrayChart" width="400" height="300"></canvas>
-                </div>
-                <div class="col-md-7">
-                  <h4>Normalisasi Gray</h4>
-                  <p>Rata-rata: {{ normalized_stats.mean }}</p>
-                  <p>Variansi: {{ normalized_stats.variance }}</p>
-                  <p>Standard Deviasi: {{ normalized_stats.std_dev }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    
+    <script>
 
-    document.addEventListener('DOMContentLoaded', function () {
-      if ("{{ filename }}") {
-        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-          keyboard: false
+
+      document.addEventListener('DOMContentLoaded', function () {
+        if ("{{ filename }}") {
+          var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+            keyboard: false
+          });
+          myModal.show();
+        }
+
+        var grayData = {{ histogram }};
+        var normalizedGrayData = {{ normalized_histogram }};
+
+        var ctxGray = document.getElementById('grayChart').getContext('2d');
+        new Chart(ctxGray, {
+          type: 'bar',
+          data: {
+            labels: Array.from({length: 256}, (_, i) => i.toString()),
+            datasets: [{
+              label: 'Gray',
+              data: grayData,
+              backgroundColor: 'rgba(128, 128, 128, 0.2)',
+              borderColor: 'rgba(128, 128, 128, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              x: {
+                beginAtZero: true
+              },
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
         });
-        myModal.show();
-      }
 
-      var grayData = {{ histogram }};
-      var normalizedGrayData = {{ normalized_histogram }};
-
-      var ctxGray = document.getElementById('grayChart').getContext('2d');
-      new Chart(ctxGray, {
-        type: 'bar',
-        data: {
-          labels: Array.from({length: 256}, (_, i) => i.toString()),
-          datasets: [{
-            label: 'Gray',
-            data: grayData,
-            backgroundColor: 'rgba(128, 128, 128, 0.2)',
-            borderColor: 'rgba(128, 128, 128, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            x: {
-              beginAtZero: true
-            },
-            y: {
-              beginAtZero: true
+        var ctxNormalizedGray = document.getElementById('normalizedGrayChart').getContext('2d');
+        new Chart(ctxNormalizedGray, {
+          type: 'bar',
+          data: {
+            labels: Array.from({length: 256}, (_, i) => i.toString()),
+            datasets: [{
+              label: 'Normalisasi Gray',
+              data: normalizedGrayData,
+              backgroundColor: 'rgba(128, 128, 128, 0.2)',
+              borderColor: 'rgba(128, 128, 128, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              x: {
+                beginAtZero: true
+              },
+              y: {
+                beginAtZero: true
+              }
             }
           }
-        }
+        });
       });
-
-      var ctxNormalizedGray = document.getElementById('normalizedGrayChart').getContext('2d');
-      new Chart(ctxNormalizedGray, {
-        type: 'bar',
-        data: {
-          labels: Array.from({length: 256}, (_, i) => i.toString()),
-          datasets: [{
-            label: 'Normalisasi Gray',
-            data: normalizedGrayData,
-            backgroundColor: 'rgba(128, 128, 128, 0.2)',
-            borderColor: 'rgba(128, 128, 128, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            x: {
-              beginAtZero: true
-            },
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    });
-  </script>
-  {% endif %}
-</body>
+    </script>
+    {% endif %}
+  </body>
 </html>

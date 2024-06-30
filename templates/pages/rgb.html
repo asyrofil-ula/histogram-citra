@@ -1,260 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Histogram Citra RGB</title>
-  <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" media="screen" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
-</head>
-<body>
-  <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_image_rgb') }}">
-    <div class="card text-center mt-5 mx-auto w-50 p-5 shadow">
-      <div class="card-body">
-        <h1 class="text-center">Histogram Citra RGB</h1>
-        <div class="d-grid gap-5 col-10 mx-auto mt-5">
-          <div class="mb-3">
-            <label for="formFile" class="form-label">Masukkan Citra RGB</label>
-            <input class="form-control" type="file" name="file" id="formFile" required/>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Histogram Citra RGB</title>
+    <link
+      href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}"
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <form
+      method="post"
+      enctype="multipart/form-data"
+      action="{{ url_for('upload_image_rgb') }}"
+    >
+      <div class="card text-center mt-5 mx-auto w-50 p-5 shadow">
+        <div class="card-body">
+          <h1 class="text-center">Histogram Citra RGB</h1>
+          <div class="d-grid gap-5 col-10 mx-auto mt-5">
+            <div class="mb-3">
+              <label for="formFile" class="form-label"
+                >Masukkan Citra RGB</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                name="file"
+                id="formFile"
+                required
+              />
+            </div>
           </div>
+          <a href="/" class="btn btn-danger">Back</a>
+          <button
+            type="submit"
+            value="Upload"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+          >
+            Convert
+          </button>
         </div>
-        <a href="/" class="btn btn-danger">Back</a>
-        <button type="submit" value="Upload" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-          Convert
-        </button>
+        <footer class="bg-body-tertiary text-center text-lg-start mt-5">
+          <!-- Copyright -->
+          <div
+            class="text-center p-3"
+            style="background-color: rgba(0, 0, 0, 0.05)"
+          >
+            © 2020 Copyright: Siti Norhaliza
+          </div>
+          <!-- Copyright -->
+        </footer>
       </div>
-    </div>
-  </form>
+    </form>
 
-  <!-- Modal -->
-  <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Histogram Citra RGB</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          {% if filename %}
-          <div class="">
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="staticBackdrop"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">
+              Histogram Citra RGB
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            {% if filename %}
             <div class="">
-              <h2 class="text-center">Citra :</h2>
-              <div class="d-flex justify-content-center align-items-center flex-shrink-0">
-              <img src="{{ url_for('static', filename='uploads/' ~ filename) }}" alt="Uploaded Image" width="250">
-              </div>
-            </div>
-          </div>
-          <div class="card text-center mt-5 mx-auto p-5 shadow">
-            <div class="container">
-              <h2>Histogram:</h2>
-              <div class="row">
-                <div class="col-md-4">
-                  <canvas class="col" id="redChart" width="400" height="300"></canvas>
-                </div>
-                <div class="col-md-4">
-                  <canvas class="col" id="greenChart" width="400" height="300"></canvas>
-                </div>
-                <div class="col-md-4">
-                  <canvas class="col" id="blueChart" width="400" height="300"></canvas>
+              <div class="">
+                <h2 class="text-center">Citra :</h2>
+                <div
+                  class="d-flex justify-content-center align-items-center flex-shrink-0"
+                >
+                  <img
+                    src="{{ url_for('static', filename='uploads/' ~ filename) }}"
+                    alt="Uploaded Image"
+                    width="250"
+                  />
                 </div>
               </div>
             </div>
-            <div class="container mt-5">
-              <h2>Nilai Statistik :</h2>
-              <p>Red - Rata-rata: {{ stats.red.mean }}, Variansi: {{ stats.red.variance }}, Standard Deviasi: {{ stats.red.std_dev }}</p>
-              <p>Green - Rata-rata: {{ stats.green.mean }}, Variansi: {{ stats.green.variance }}, Standard Deviasi: {{ stats.green.std_dev }}</p>
-              <p>Blue - Rata-rata: {{ stats.blue.mean }}, Variansi: {{ stats.blue.variance }}, Standard Deviasi: {{ stats.blue.std_dev }}</p>
-            </div>
-          </div>
-          <div class="card text-center mt-5 mx-auto p-5 shadow">
-            <div class="container">
-              <h2>Histogram Normalisasi:</h2>
-              <div class="row">
-                <div class="col-md-4">
-                  <canvas class="col" id="normalizedRedChart" width="400" height="300"></canvas>
-                </div>
-                <div class="col-md-4">
-                  <canvas class="col" id="normalizedGreenChart" width="400" height="300"></canvas>
-                </div>
-                <div class="col-md-4">
-                  <canvas class="col" id="normalizedBlueChart" width="400" height="300"></canvas>
+            <div class="card text-center mt-5 mx-auto p-5 shadow">
+              <div class="container">
+                <h2>Histogram:</h2>
+                <div class="row">
+                  <div class="col-md-4">
+                    <canvas
+                      class="col"
+                      id="redChart"
+                      width="400"
+                      height="300"
+                    ></canvas>
+                  </div>
+                  <div class="col-md-4">
+                    <canvas
+                      class="col"
+                      id="greenChart"
+                      width="400"
+                      height="300"
+                    ></canvas>
+                  </div>
+                  <div class="col-md-4">
+                    <canvas
+                      class="col"
+                      id="blueChart"
+                      width="400"
+                      height="300"
+                    ></canvas>
+                  </div>
                 </div>
               </div>
+              <div class="container mt-5">
+                <h2>Nilai Statistik :</h2>
+                <p>
+                  Red - Rata-rata: {{ stats.red.mean }}, Variansi: {{
+                  stats.red.variance }}, Standard Deviasi: {{ stats.red.std_dev
+                  }}
+                </p>
+                <p>
+                  Green - Rata-rata: {{ stats.green.mean }}, Variansi: {{
+                  stats.green.variance }}, Standard Deviasi: {{
+                  stats.green.std_dev }}
+                </p>
+                <p>
+                  Blue - Rata-rata: {{ stats.blue.mean }}, Variansi: {{
+                  stats.blue.variance }}, Standard Deviasi: {{
+                  stats.blue.std_dev }}
+                </p>
+              </div>
             </div>
-            <div class="container mt-5">
-              <h2>Nilai Statistik :</h2>
-              <p>Normalisasi Red - Rata-rata: {{ normalized_stats.red.mean }}, Variansi: {{ normalized_stats.red.variance }}, Standard Deviasi: {{ normalized_stats.red.std_dev }}</p>
-              <p>Normalisasi Green - Rata-rata: {{ normalized_stats.green.mean }}, Variansi: {{ normalized_stats.green.variance }}, Standard Deviasi: {{ normalized_stats.green.std_dev }}</p>
-              <p>Normalisasi Blue - Rata-rata: {{ normalized_stats.blue.mean }}, Variansi: {{ normalized_stats.blue.variance }}, Standard Deviasi: {{ normalized_stats.blue.std_dev }}</p>
+            <div class="card text-center mt-5 mx-auto p-5 shadow">
+              <div class="container">
+                <h2>Histogram Normalisasi:</h2>
+                <div class="row">
+                  <div class="col-md-4">
+                    <canvas
+                      class="col"
+                      id="normalizedRedChart"
+                      width="400"
+                      height="300"
+                    ></canvas>
+                  </div>
+                  <div class="col-md-4">
+                    <canvas
+                      class="col"
+                      id="normalizedGreenChart"
+                      width="400"
+                      height="300"
+                    ></canvas>
+                  </div>
+                  <div class="col-md-4">
+                    <canvas
+                      class="col"
+                      id="normalizedBlueChart"
+                      width="400"
+                      height="300"
+                    ></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="container mt-5">
+                <h2>Nilai Statistik :</h2>
+                <p>
+                  Normalisasi Red - Rata-rata: {{ normalized_stats.red.mean }},
+                  Variansi: {{ normalized_stats.red.variance }}, Standard
+                  Deviasi: {{ normalized_stats.red.std_dev }}
+                </p>
+                <p>
+                  Normalisasi Green - Rata-rata: {{ normalized_stats.green.mean
+                  }}, Variansi: {{ normalized_stats.green.variance }}, Standard
+                  Deviasi: {{ normalized_stats.green.std_dev }}
+                </p>
+                <p>
+                  Normalisasi Blue - Rata-rata: {{ normalized_stats.blue.mean
+                  }}, Variansi: {{ normalized_stats.blue.variance }}, Standard
+                  Deviasi: {{ normalized_stats.blue.std_dev }}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          <div class="modal-footer">
+            <footer class="container" style="width: 50%; margin: 0 auto">
+              <!-- Copyright -->
+              <div
+                class="justify-content-center text-center align-items-center"
+              >
+                © 2020 Copyright: Siti Norhaliza
+              </div>
+              <!-- Copyright -->
+            </footer>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-      if ("{{ filename }}") {
-        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-          keyboard: false
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) => {
+        if ("{{ filename }}") {
+          var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+            keyboard: false
+          });
+          myModal.show();
+        }
+
+        var redData = {{ histogram.red | tojson }};
+        var greenData = {{ histogram.green | tojson }};
+        var blueData = {{ histogram.blue | tojson }};
+        var normalizedRedData = {{ normalized_histogram.red | tojson }};
+        var normalizedGreenData = {{ normalized_histogram.green | tojson }};
+        var normalizedBlueData = {{ normalized_histogram.blue | tojson }};
+
+        // Generate chart for Red histogram
+        var ctxRed = document.getElementById('redChart').getContext('2d');
+        new Chart(ctxRed, {
+          type: 'bar',
+          data: {
+            labels: Array.from({length: 256}, (_, i) => i.toString()),
+            datasets: [{
+              label: 'Red',
+              data: redData,
+              backgroundColor: 'rgba(255, 0, 0, 0.5)',
+              borderColor: 'rgba(255, 0, 0, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
         });
-        myModal.show();
-      }
 
-      var redData = {{ histogram.red | tojson }};
-      var greenData = {{ histogram.green | tojson }};
-      var blueData = {{ histogram.blue | tojson }};
-      var normalizedRedData = {{ normalized_histogram.red | tojson }};
-      var normalizedGreenData = {{ normalized_histogram.green | tojson }};
-      var normalizedBlueData = {{ normalized_histogram.blue | tojson }};
-
-      // Generate chart for Red histogram
-      var ctxRed = document.getElementById('redChart').getContext('2d');
-      new Chart(ctxRed, {
-        type: 'bar',
-        data: {
-          labels: Array.from({length: 256}, (_, i) => i.toString()),
-          datasets: [{
-            label: 'Red',
-            data: redData,
-            backgroundColor: 'rgba(255, 0, 0, 0.5)',
-            borderColor: 'rgba(255, 0, 0, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
+        // Generate chart for Green histogram
+        var ctxGreen = document.getElementById('greenChart').getContext('2d');
+        new Chart(ctxGreen, {
+          type: 'bar',
+          data: {
+            labels: Array.from({length: 256}, (_, i) => i.toString()),
+            datasets: [{
+              label: 'Green',
+              data: greenData,
+              backgroundColor: 'rgba(0, 255, 0, 0.5)',
+              borderColor: 'rgba(0, 255, 0, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
             }
           }
-        }
-      });
+        });
 
-      // Generate chart for Green histogram
-      var ctxGreen = document.getElementById('greenChart').getContext('2d');
-      new Chart(ctxGreen, {
-        type: 'bar',
-        data: {
-          labels: Array.from({length: 256}, (_, i) => i.toString()),
-          datasets: [{
-            label: 'Green',
-            data: greenData,
-            backgroundColor: 'rgba(0, 255, 0, 0.5)',
-            borderColor: 'rgba(0, 255, 0, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
+        // Generate chart for Blue histogram
+        var ctxBlue = document.getElementById('blueChart').getContext('2d');
+        new Chart(ctxBlue, {
+          type: 'bar',
+          data: {
+            labels: Array.from({length: 256}, (_, i) => i.toString()),
+            datasets: [{
+              label: 'Blue',
+              data: blueData,
+              backgroundColor: 'rgba(0, 0, 255, 0.5)',
+              borderColor: 'rgba(0, 0, 255, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
             }
           }
-        }
-      });
+        });
 
-      // Generate chart for Blue histogram
-      var ctxBlue = document.getElementById('blueChart').getContext('2d');
-      new Chart(ctxBlue, {
-        type: 'bar',
-        data: {
-          labels: Array.from({length: 256}, (_, i) => i.toString()),
-          datasets: [{
-            label: 'Blue',
-            data: blueData,
-            backgroundColor: 'rgba(0, 0, 255, 0.5)',
-            borderColor: 'rgba(0, 0, 255, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
+        // Generate chart for Normalized Red histogram
+        var ctxNormalizedRed = document.getElementById('normalizedRedChart').getContext('2d');
+        new Chart(ctxNormalizedRed, {
+          type: 'bar',
+          data: {
+            labels: Array.from({length: 256}, (_, i) => i.toString()),
+            datasets: [{
+              label: 'Normalisasi Red',
+              data: normalizedRedData,
+              backgroundColor: 'rgba(255, 0, 0, 0.5)',
+              borderColor: 'rgba(255, 0, 0, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
             }
           }
-        }
-      });
+        });
 
-      // Generate chart for Normalized Red histogram
-      var ctxNormalizedRed = document.getElementById('normalizedRedChart').getContext('2d');
-      new Chart(ctxNormalizedRed, {
-        type: 'bar',
-        data: {
-          labels: Array.from({length: 256}, (_, i) => i.toString()),
-          datasets: [{
-            label: 'Normalisasi Red',
-            data: normalizedRedData,
-            backgroundColor: 'rgba(255, 0, 0, 0.5)',
-            borderColor: 'rgba(255, 0, 0, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
+        // Generate chart for Normalized Green histogram
+        var ctxNormalizedGreen = document.getElementById('normalizedGreenChart').getContext('2d');
+        new Chart(ctxNormalizedGreen, {
+          type: 'bar',
+          data: {
+            labels: Array.from({length: 256}, (_, i) => i.toString()),
+            datasets: [{
+              label: 'Normalisasi Green',
+              data: normalizedGreenData,
+              backgroundColor: 'rgba(0, 255, 0, 0.5)',
+              borderColor: 'rgba(0, 255, 0, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
             }
           }
-        }
-      });
+        });
 
-      // Generate chart for Normalized Green histogram
-      var ctxNormalizedGreen = document.getElementById('normalizedGreenChart').getContext('2d');
-      new Chart(ctxNormalizedGreen, {
-        type: 'bar',
-        data: {
-          labels: Array.from({length: 256}, (_, i) => i.toString()),
-          datasets: [{
-            label: 'Normalisasi Green',
-            data: normalizedGreenData,
-            backgroundColor: 'rgba(0, 255, 0, 0.5)',
-            borderColor: 'rgba(0, 255, 0, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
+        // Generate chart for Normalized Blue histogram
+        var ctxNormalizedBlue = document.getElementById('normalizedBlueChart').getContext('2d');
+        new Chart(ctxNormalizedBlue, {
+          type: 'bar',
+          data: {
+            labels: Array.from({length: 256}, (_, i) => i.toString()),
+            datasets: [{
+              label: 'Normalisasi Blue',
+              data: normalizedBlueData,
+              backgroundColor: 'rgba(0, 0, 255, 0.5)',
+              borderColor: 'rgba(0, 0, 255, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
             }
           }
-        }
+        });
       });
-
-      // Generate chart for Normalized Blue histogram
-      var ctxNormalizedBlue = document.getElementById('normalizedBlueChart').getContext('2d');
-      new Chart(ctxNormalizedBlue, {
-        type: 'bar',
-        data: {
-          labels: Array.from({length: 256}, (_, i) => i.toString()),
-          datasets: [{
-            label: 'Normalisasi Blue',
-            data: normalizedBlueData,
-            backgroundColor: 'rgba(0, 0, 255, 0.5)',
-            borderColor: 'rgba(0, 0, 255, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    });
-  </script>
-  {% endif %}
-</body>
+    </script>
+    {% endif %}
+  </body>
 </html>
