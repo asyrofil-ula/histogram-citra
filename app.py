@@ -28,18 +28,20 @@ def calculate_histogram_gray(image):
     histogram, _ = np.histogram(image_array, bins=256, range=(0, 256))
     return histogram.tolist()
 
-def calculate_normalized_histogram(image):
-    image_array = np.array(image).astype(np.float32) / 255.0
+def calculate_normalized_histogram_rgb(image):
+    image_array = np.array(image).astype(np.float32)
+    normalized_array = (image_array - image_array.min()) / (image_array.max() - image_array.min())
     histograms = {
-        'red': np.histogram(image_array[:, :, 0], bins=256, range=(0, 1))[0].tolist(),
-        'green': np.histogram(image_array[:, :, 1], bins=256, range=(0, 1))[0].tolist(),
-        'blue': np.histogram(image_array[:, :, 2], bins=256, range=(0, 1))[0].tolist(),
+        'red': np.histogram(normalized_array[:, :, 0], bins=256, range=(0, 1))[0].tolist(),
+        'green': np.histogram(normalized_array[:, :, 1], bins=256, range=(0, 1))[0].tolist(),
+        'blue': np.histogram(normalized_array[:, :, 2], bins=256, range=(0, 1))[0].tolist(),
     }
     return histograms
 
 def calculate_normalized_histogram_gray(image):
-    image_array = np.array(image.convert("L")).astype(np.float32) / 255.0
-    histogram, _ = np.histogram(image_array, bins=256, range=(0, 1))
+    image_array = np.array(image.convert("L")).astype(np.float32)
+    normalized_array = (image_array - image_array.min()) / (image_array.max() - image_array.min())
+    histogram, _ = np.histogram(normalized_array, bins=256, range=(0, 1))
     return histogram.tolist()
 
 def calculate_statistics(histogram):
@@ -47,6 +49,21 @@ def calculate_statistics(histogram):
     mean = np.mean(values)
     variance = np.var(values)
     std_dev = np.std(values)
+    return {'mean': mean, 'variance': variance, 'std_dev': std_dev}
+
+def calculate_statistics_from_image(image):
+    image_array = np.array(image)
+    mean = np.mean(image_array)
+    variance = np.var(image_array)
+    std_dev = np.std(image_array)
+    return {'mean': mean, 'variance': variance, 'std_dev': std_dev}
+
+def calculate_normalized_statistics_from_image(image):
+    image_array = np.array(image).astype(np.float32)
+    normalized_array = (image_array - image_array.min()) / (image_array.max() - image_array.min())
+    mean = np.mean(normalized_array)
+    variance = np.var(normalized_array)
+    std_dev = np.std(normalized_array)
     return {'mean': mean, 'variance': variance, 'std_dev': std_dev}
 
 def convert_to_grayscale(input_image_path, output_image_path):
@@ -82,32 +99,30 @@ def upload_image_rgb():
         path_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         img = Image.open(path_file)
         histogram = calculate_histogram(img)
-        normalized_histogram = calculate_normalized_histogram(img)
+        normalized_histogram = calculate_normalized_histogram_rgb(img)
         
-        # Hitung statistik
-        stats = {
-            'red': calculate_statistics(histogram['red']),
-            'green': calculate_statistics(histogram['green']),
-            'blue': calculate_statistics(histogram['blue']),
+        # Hitung statistik dari gambar yang dinormalisasi
+        stats_from_image = {
+            'red': calculate_statistics_from_image(np.array(img)[:, :, 0]),
+            'green': calculate_statistics_from_image(np.array(img)[:, :, 1]),
+            'blue': calculate_statistics_from_image(np.array(img)[:, :, 2]),
         }
-        normalized_stats = {
-            'red': calculate_statistics(normalized_histogram['red']),
-            'green': calculate_statistics(normalized_histogram['green']),
-            'blue': calculate_statistics(normalized_histogram['blue']),
+        normalized_stats_from_image = {
+            'red': calculate_normalized_statistics_from_image(np.array(img)[:, :, 0]),
+            'green': calculate_normalized_statistics_from_image(np.array(img)[:, :, 1]),
+            'blue': calculate_normalized_statistics_from_image(np.array(img)[:, :, 2]),
         }
         
         return render_template('/pages/rgb.html', 
             filename=filename, 
             histogram=histogram, 
             normalized_histogram=normalized_histogram, 
-            stats=stats, 
-            normalized_stats=normalized_stats
+            stats=stats_from_image, 
+            normalized_stats=normalized_stats_from_image
         )
     else:
         flash('Allowed image types are - png, jpg, jpeg')
         return redirect(request.url)
-
-
 
 @app.route('/upload/gray', methods=['POST'])
 def upload_image_gray():
@@ -130,12 +145,13 @@ def upload_image_gray():
         
         # Calculate the histogram
         img = Image.open(file_path)
-        histogram = calculate_histogram_gray(img)
-        normalized_histogram = calculate_normalized_histogram_gray(img)
+        grayscale_img = Image.open(grayscale_file_path)
+        histogram = calculate_histogram_gray(grayscale_img)
+        normalized_histogram = calculate_normalized_histogram_gray(grayscale_img)
         
         # Calculate statistics
-        stats = calculate_statistics(histogram)
-        normalized_stats = calculate_statistics(normalized_histogram)
+        stats = calculate_statistics_from_image(grayscale_img)
+        normalized_stats = calculate_normalized_statistics_from_image(grayscale_img)
         
         return render_template('/pages/gray.html', filename=filename, histogram=histogram, normalized_histogram=normalized_histogram, stats=stats, normalized_stats=normalized_stats)
     else:
