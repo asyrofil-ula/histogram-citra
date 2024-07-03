@@ -1,17 +1,5 @@
 # histogram-citra
 
-## Instalasi & run environment virtual python
-
-```shell
-    # power shell
-    py -3 -m venv .venv
-```
-
-```command prompt
-    <!-- command prompt -->
-    source .venv\Scripts\activate
-```
-
 # Install library python :
 
 ```command prompt
